@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello World</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <style type="text/css">
+      *{
+        box-sizing: border-box;
+      }
+      html{margin:0; padding:0;}
+      body{
+        margin:0 auto; 
+        padding:0; 
+        font-size: 14px;
+        max-width: 800px;
+        line-height: 1.618;
+        background-color: #FAFAFA;
+        font-family: "Microsoft Yahei", verdana;
+      }
+
+      a {text-decoration: none; color:#006291;}
+      a:link {color:#006291;}
+      a:visited {color:#006291;}
+      a:hover{ text-decoration: none; color: #FF6633;}
+
+      input[type="text"]{
+        width: 100%;
+        margin:0;
+        padding: 0 8px;
+        border: solid 1px #EAEAEA;
+        border-radius: 3px;
+        outline: none;
+        height: 24px;
+        line-height: 24px;
+        box-sizing: border-box;
+        display: inline-block;
+        -webkit-appearance: none;
+      }
+
+      hr {
+        height: 1px;
+        background-color: #EAEAEA;
+        border: none;
+      }
+
+      img {max-width: 100%;}
+
+      ul {
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        list-style-type: none;
+        box-sizing: border-box;
+      }
+      
+      li {
+        margin: 8px 0;
+        padding:0;
+        background-color: white;
+      }
+      
+      p {
+        margin: 0;
+        text-indent: 2em;
+        color: #646464;
+        box-sizing: border-box;
+      }
+      pre {
+        margin: 0;
+        padding: 8px;
+        color: #646464;
+        box-sizing: border-box;
+        font-family: "Microsoft Yahei", verdana;
+      }
+      h1,h2,h3,h4,h5,h6{
+        color: #646464;
+        padding: 0 1em;
+      }
+      
+      div {
+        margin:0;
+        padding: 0;
+      }
+
+      label {
+        display: block;
+        margin: 8px 0;
+        padding: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 72px;
+      }
+
+      textarea{
+        outline: none;
+        margin: 4px 0;
+        padding: 4px;
+        resize: none;
+        display: block;
+        width: 100%;
+        border-radius: 3px;
+        border: solid 1px #EAEAEA;
+        -webkit-appearance: none;
+      }
+
+      button {
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 4px 8px;
+        outline: none;
+        background-color: rgba(100,100,100,1);
+        -webkit-appearance: none;
+      }
+
+      button:focus{
+        outline: none;
+      }
+
+      input::-moz-focus-inner{border:0; padding:0}
+      button::-moz-focus-inner{border:0; padding:0}
+
+      button:hover {
+        background-color: rgba(100,100,100,0.8);
+      }
+
+      button:active {
+        background-color: rgba(100,100,100,0.9);
+      }
+
+      .small { }
+      .form {
+        margin: 0 auto;
+        padding: 16px;
+        margin-bottom: 48px;
+        max-width: 480px;
+        background-color: white;
+      }
+      .caption {
+        color: #505050;
+        display: inline-block;
+        padding: 0 8px;
+        width: 72px;
+        margin-left: -72px;
+        text-align: right;
+      }
+
+      .center{
+        text-align: center;
+      }
+
+      .padding-16 {
+        padding: 16px;
+      }
+
+      .form-actions {
+        text-align: center;
+        padding: 8px 0;
+      }
+
+      .item-header {
+        padding: 4px 8px;
+        color: #808080;
+        font-size: 0.75em;
+        background-color: #EAEAEA;
+      }
+
+      .item-name {
+        color: black;
+        margin: 0;
+        padding: 0 4px;
+        display: inline-block;
+        max-width: 128px;
+        vertical-align: text-bottom;
+        white-space:nowrap; 
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .item-created {
+        color: #646464;
+        margin: 0;
+        padding: 0 4px;
+        vertical-align: text-bottom;
+        display: inline-block;
+      }
+      .item-content {
+        padding: 48px;
+        line-height: 2;
+      }
+      .footer {
+        margin: 8px 0;
+        background-color: white;
+      }
+    </style>
+    <script type="text/javascript" src="./js/ajax.js"></script>
+    <script type="text/javascript" src="./js/vue-min.js"></script>
+    <script type="text/javascript" src="./js/marked.js"></script>
+  </head>
+  <body>
+    <h1>Hello,World!</h1>
+    <hr />
+    <div id="view">
+      <ul>
+        <li v-for="item in items">
+          <div class="item-header small">
+            <span class="item-name"> {{item.name}} </span>          
+            <span class="item-created">{{item.created}}</span>
+          </div>
+          <div class="item-content" v-html="marked.parse(item.text)"></div>
+        </li>
+      </ul>
+      <div class="footer center padding-16">
+        <button v-on:click="load(page+1)">OLDER</button>
+        <button v-on:click="load(1)">HOME</button>
+        <button v-on:click="load(page-1)">NEWER</button>
+      </div>
+      <div class="footer">
+        <div class="item-header">SAY HELLO</div>
+        <div class="form">
+          <label><span class="caption">Name:</span><input type="text" v-model="name" /></label>
+          <label><span class="caption">E-Mail:</span><input type="text" v-model="email" /></label>
+          <textarea rows="5" v-model="text" placeholder="请在这里输入消息..."></textarea> 
+          <div class="form-actions"> 
+            <button v-on:click="save()">HELLO</button>
+            <button v-on:click="reset()">RESET</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var ui = {};
+      ui.view = new Vue({
+        el:"#view",
+        data:{
+          page: 1,
+          name: "Guest",
+          email: "",
+          text: "",
+          items:[]
+        },
+        methods: {
+          load: function(page){
+            var me = this;
+            this.page = page ? page : 1;
+            if(this.page < 1) {this.page =1;}
+            ajax.get("./list.do?page=" + this.page, function(data, error){
+              if(!error){
+                me.items = JSON.parse(data);
+                window.scrollTo(0,0);
+              }
+            });
+          },
+          save: function(){
+            var me = this;
+            var body = [];
+            body.push("name=" + window.encodeURIComponent(this.name));
+            body.push("email=" + window.encodeURIComponent(this.email));
+            body.push("text=" + window.encodeURIComponent(this.text));
+            ajax.post("./add.do", body.join("&"), function(data, error){
+              if(!error){
+                me.text = "";
+                ui.load(1);
+              }
+            });
+          },
+          reset: function(){
+            this.name = "Guest";
+            this.email = "";
+            this.text = "";
+          }
+        }
+      });
+
+      ui.callback = function(o){
+        var me = this;
+        //console.log(o);
+        if(o.uid.length>0){
+          me.view.name = window.decodeURIComponent(o.nick);
+          document.title = "Hello, " + me.view.name;
+        }
+      };
+
+      ui.load = function(){
+        this.view.load(1);
+      };
+      ui.load();
+    </script>
+    <script type="text/javascript" src="/woo/uid.js?callback=ui.callback"></script>
+  </body>
+</html>

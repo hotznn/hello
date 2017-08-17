@@ -1,0 +1,17 @@
+{
+  "name": "hello",
+  "version": "1.0.0",
+  "description": "Hello,You!",
+  "main": "index.js",
+  "scripts": {
+    "test": "node hello"
+  },
+  "keywords": [
+    "hello"
+  ],
+  "author": "woo",
+  "license": "MIT",
+  "dependencies": {
+    "omuen": "0.0.20"
+  }
+}
