@@ -7,15 +7,21 @@
       *{
         box-sizing: border-box;
       }
+      @font-face {
+        font-family: 'hand-write';
+        src: url('./hw.woff2') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
       html{margin:0; padding:0;}
       body{
         margin:0 auto; 
         padding:0; 
-        font-size: 14px;
+        font-size: 16px;
         max-width: 800px;
         line-height: 1.618;
         background-color: #FAFAFA;
-        font-family: "Microsoft Yahei", verdana;
+        font-family: hand-write, "Microsoft Yahei", verdana;
       }
 
       a {text-decoration: none; color:#006291;}
@@ -192,9 +198,9 @@
         background-color: white;
       }
     </style>
-    <script type="text/javascript" src="./js/ajax.js"></script>
-    <script type="text/javascript" src="./js/vue-min.js"></script>
-    <script type="text/javascript" src="./js/marked.js"></script>
+    <script type="text/javascript" src="./cdn/woo.js"></script>
+    <script type="text/javascript" src="./cdn/marked.js"></script>
+    <script type="text/javascript" src="./cdn/vue-min.js"></script>
   </head>
   <body>
     <h1>Hello,World!</h1>
@@ -206,7 +212,7 @@
             <span class="item-name"> {{item.name}} </span>          
             <span class="item-created">{{item.created}}</span>
           </div>
-          <div class="item-content" v-html="marked.parse(item.text)"></div>
+          <div class="item-content" v-html="marked(item.text)"></div>
         </li>
       </ul>
       <div class="footer center padding-16">
@@ -228,63 +234,68 @@
       </div>
     </div>
     <script type="text/javascript">
-      var ui = {};
-      ui.view = new Vue({
-        el:"#view",
-        data:{
-          page: 1,
-          name: "Guest",
-          email: "",
-          text: "",
-          items:[]
-        },
-        methods: {
-          load: function(page){
-            var me = this;
-            this.page = page ? page : 1;
-            if(this.page < 1) {this.page =1;}
-            ajax.get("./list.do?page=" + this.page, function(data, error){
-              if(!error){
-                me.items = JSON.parse(data);
+      (()=>{
+        let web = window.Web;
+        let marked = window.Marked;
+        let view = new Vue({
+          el:"#view",
+          data:{
+            page: 1,
+            name: "Guest",
+            email: "",
+            text: "",
+            items:[]
+          },
+          mounted(){
+            this.load(1);
+          },
+          methods: {
+            load(page){
+              this.page = page ? page : 1;
+              if(this.page < 1) {this.page =1;}
+              window.location.href = "#page=" + this.page;
+              web.get("list.do?page=" + this.page).then(o=>{
+                this.items = o.data();
                 window.scrollTo(0,0);
-              }
-            });
-          },
-          save: function(){
-            var me = this;
-            var body = [];
-            body.push("name=" + window.encodeURIComponent(this.name));
-            body.push("email=" + window.encodeURIComponent(this.email));
-            body.push("text=" + window.encodeURIComponent(this.text));
-            ajax.post("./add.do", body.join("&"), function(data, error){
-              if(!error){
+              }).catch(e=>{
+                console.log(e);
+              });
+            },
+            save(){
+              let data = web.data({
+                name: this.name,
+                email: this.email,
+                text: this.text
+              });
+              web.post("add.do", data.build()).then(o=>{
                 me.text = "";
-                ui.load(1);
-              }
-            });
-          },
-          reset: function(){
-            this.name = "Guest";
-            this.email = "";
-            this.text = "";
+                window.setTimeout(()=>{
+                  me.load(1);
+                },1000);
+              }).catch(e=>{
+                console.log(e);
+              });
+            },
+            reset(){
+              this.name = "路人";
+              this.email = "";
+              this.text = "";
+            },
+            marked(text){
+              return marked.build(text);
+            }
           }
-        }
-      });
+        });
+        window.view = view;
+      })();
 
-      ui.callback = function(o){
-        var me = this;
-        //console.log(o);
+      callback = function(o){
         if(o.uid.length>0){
-          me.view.name = window.decodeURIComponent(o.nick);
-          document.title = "Hello, " + me.view.name;
+          view.name = window.decodeURIComponent(o.nick);
+          document.title = "Hello, " + view.name;
         }
       };
-
-      ui.load = function(){
-        this.view.load(1);
-      };
-      ui.load();
     </script>
-    <script type="text/javascript" src="https://www.bimwook.com:11180/woo/uid.js?callback=ui.callback"></script>
+    <script type="text/javascript" src="/woo/uid.js?callback=callback"></script>
   </body>
 </html>
